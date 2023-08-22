@@ -40,18 +40,19 @@ function TodoInsert(){
 
 const styles = StyleSheet.create({
   container: {
-    height: 50,
+    height: 70,
     paddingLeft: 10,
     borderColor: 'transparent',
-    borderTopWidth: 1,
+    borderTopWidth: 3,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    backgroundColor: '#fff',
   },
   input: {
     color: '#a8c8ffff',
     fontSize: 20,
-    paddingVertical: 10,
+    paddingVertical: 20,
   },
   button: {
     backgroundColor: '#a8c8ffff',

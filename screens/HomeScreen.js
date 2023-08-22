@@ -2,6 +2,7 @@ import React from 'react'
 import { SafeAreaView, View, Text, StyleSheet, StatusBar } from 'react-native'
 
 import DateHeader from '../components/DateHeader'
+import Default from '../components/Default'
 import TodoInsert from '../components/TodoInsert'
 
 function HomeScreen({navigation}){
@@ -10,9 +11,7 @@ function HomeScreen({navigation}){
     <SafeAreaView style={styles.block}>
       <StatusBar backgroundColor="#a8c8ffff"></StatusBar>
       <DateHeader date={date}/>
-      <View>
-        <Text>할일목록</Text>
-      </View>
+      <Default/>
       <TodoInsert/>
     </SafeAreaView>
   )
