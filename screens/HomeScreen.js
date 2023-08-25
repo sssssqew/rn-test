@@ -14,6 +14,8 @@ function HomeScreen({navigation}){
     {id: 3, title: '자기전에 책읽기', category: '자기계발', createdAt: '2023-08-22', isDone: false},
   ])
   const [todoText, setTodoText] = useState('')
+  const [warning, setWarning] = useState(false)
+
   const onInsertTodo = (trimedText) => {
     if(trimedText && trimedText.length > 3){ // 최소 글자수 제한
       const nextId = todos.length + 1
@@ -28,6 +30,7 @@ function HomeScreen({navigation}){
       }
       if(todos.filter(todo => todo.title === newTodo.title).length > 0){
         setTodoText('중복된 할일입니다.')
+        setWarning(true)
       }else{
         setTodos([...todos, newTodo])
         Keyboard.dismiss() // 추가버튼 클릭시 키보드 감추기 
@@ -36,6 +39,7 @@ function HomeScreen({navigation}){
     }else{
       console.log('3자 이상 입력하세요!')
       setTodoText('3자 이상 입력하세요!')
+      setWarning(true)
     }
   }
 
@@ -44,7 +48,12 @@ function HomeScreen({navigation}){
       <StatusBar backgroundColor="#a8c8ffff"></StatusBar>
       <DateHeader date={date}/>
       {todos.length === 0 ? <Default/> : <TodoList todos={todos} />}
-      <TodoInsert onInsertTodo={onInsertTodo} todoText={todoText} setTodoText={setTodoText}/>
+      <TodoInsert 
+        onInsertTodo={onInsertTodo} 
+        todoText={todoText} 
+        setTodoText={setTodoText} 
+        warning={warning} 
+        setWarning={setWarning}/>
     </SafeAreaView>
   )
 }
