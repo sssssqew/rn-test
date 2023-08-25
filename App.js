@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -9,10 +9,15 @@ import CalendarScreen from './screens/CalendarScreen';
 import DashBoardSceen from './screens/DashBoardScreen';
 import SettingsScreen from './screens/SettingsScreen';
 
+import DropdownCategory from './components/DropdownCategory'
+
 // const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator()
 
 export default function App() {
+  const [caretType, setCaretType] = useState(false)
+  console.log("캐럿[app]: ", caretType)
+
   return (
     <NavigationContainer>
       <Tab.Navigator initialRouteName = "Home" screenOptions={{
@@ -21,9 +26,17 @@ export default function App() {
         //   backgroundColor: '#333'
         // }
       }}>
-        <Tab.Screen name="Home" component={HomeScreen} options={{
+        <Tab.Screen name="Home" children={(props) => <HomeScreen {...props} caretType={caretType}/>} options={{
           title: '홈',
-          tabBarIcon: ({ color, size }) => <Icon name="home" color={color} size={size}/>
+          tabBarIcon: ({ color, size }) => <Icon name="home" color={color} size={size}/>,
+          headerTitle: (props) => <DropdownCategory {...props} caretType={caretType} setCaretType={setCaretType}/>,
+          headerStyle: {
+            backgroundColor: '#a8c8ffff',
+          },
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            color: '#fff'
+          },
         }}/>
         <Tab.Screen name="Calendar" component={CalendarScreen} options={{
           title: '달력',

@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
-import { SafeAreaView, View, Text, StyleSheet, StatusBar, Keyboard } from 'react-native'
+import { SafeAreaView, View, Text, StyleSheet, StatusBar, Keyboard, FlatList } from 'react-native'
 
 import DateHeader from '../components/DateHeader'
 import Default from '../components/Default'
 import TodoInsert from '../components/TodoInsert'
 import TodoList from '../components/TodoList'
+import DropdownItem from '../components/DropdownItem'
 
-function HomeScreen({navigation}){
+function HomeScreen({ navigation, caretType }){
   const date = new Date()
+  const categories = ['자기계발', '업무', '오락', '여행', '연애', 'IT', '취미']
   const [todos, setTodos] = useState([
     {id: 1, title: '공원에 산책가기', category: '여행', createdAt: '2023-08-22', isDone: false},
     {id: 2, title: '보고서 작성하기', category: '업무', createdAt: '2023-08-22', isDone: true},
@@ -46,6 +48,15 @@ function HomeScreen({navigation}){
   return (
     <SafeAreaView style={styles.block}>
       <StatusBar backgroundColor="#a8c8ffff"></StatusBar>
+      {caretType 
+      && <FlatList 
+            data={categories} 
+            keyExtractor={item => item}
+            renderItem={({item}) => (
+              <DropdownItem category={item}/> // 아이템 각각의 뷰 화면
+            )}
+
+          />}
       <DateHeader date={date}/>
       {todos.length === 0 ? <Default/> : <TodoList todos={todos} />}
       <TodoInsert 
