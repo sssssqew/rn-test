@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { 
     View, 
     Text,
@@ -8,11 +8,17 @@ import {
     Keyboard
 } from 'react-native'
 
-function TodoInsert(){
-  const [todoText, setTodoText] = useState('')
+function TodoInsert({ onInsertTodo, todoText, setTodoText }){
   const onPress = () => {
-    setTodoText('') // 입력창 초기화
-    Keyboard.dismiss() // 키보드 감추기
+    const trimedText = todoText.trim()
+    onInsertTodo(trimedText)
+  }
+  const handleChange = (text) => { 
+    if (/\n/.test(text)) { // 엔터키 입력시 
+      onPress() // 할일추가
+    } else {
+      setTodoText(text)
+    }
   }
   console.log(todoText)
   return (
@@ -23,14 +29,18 @@ function TodoInsert(){
         selectionColor={'#d6e3ffff'}  // 커서색상
         style={styles.input}
         value={todoText}
-        onChangeText={setTodoText} // 입력창에 글자를 입력할때
-        onSubmitEditing={onPress} // 엔터키 눌렀을때
+        blurOnSubmit={ false } // 탭키 누를때 키보드 사라지지 않게 하기
+        onChangeText={handleChange} // 입력창에 글자를 입력할때
+        returnKeyType="done" // 엔터키 아이콘 변경
+        maxLength={50} // 최대 글자수 제한
+        autoCorrect={false} // 자동완성기능 끄기
+        // onSubmitEditing={onPress} // 여기서 하면 엔터키 두번 눌러야 할일추가됨
         />
         <TouchableOpacity 
             activeOpacity={0.7} // 버튼 클릭시 투명도 변경
             onPress={onPress}   // 버튼 클릭시 실행
         > 
-            <View style={styles.button}>
+            <View style={styles.button}> 
                 <Text style={styles.buttonText}>추가</Text>
             </View>
         </TouchableOpacity>
@@ -53,6 +63,7 @@ const styles = StyleSheet.create({
     color: '#a8c8ffff',
     fontSize: 20,
     paddingVertical: 20,
+    flex: 1
   },
   button: {
     backgroundColor: '#a8c8ffff',
