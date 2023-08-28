@@ -16,7 +16,7 @@ const Tab = createBottomTabNavigator()
 
 export default function App() {
   const [caretType, setCaretType] = useState(false)
-  console.log("캐럿[app]: ", caretType)
+  // console.log("캐럿[app]: ", caretType)
 
   return (
     <NavigationContainer>
@@ -26,7 +26,7 @@ export default function App() {
         //   backgroundColor: '#333'
         // }
       }}>
-        <Tab.Screen name="Home" children={(props) => <HomeScreen {...props} caretType={caretType}/>} options={{
+        <Tab.Screen name="Home" children={(props) => <HomeScreen {...props} caretType={caretType} setCaretType={setCaretType}/>} options={{
           title: '홈',
           tabBarIcon: ({ color, size }) => <Icon name="home" color={color} size={size}/>,
           headerTitle: (props) => <DropdownCategory {...props} caretType={caretType} setCaretType={setCaretType}/>,
