@@ -1,9 +1,9 @@
 import React from 'react'
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 
-function DropdownItem({ category, closeDropdown }){
+function DropdownItem({ category, selectCategory }){ // selectCategory 함수 전달 (수정)
     return (
-        <TouchableOpacity onPress={closeDropdown}>
+        <TouchableOpacity onPress={selectCategory}>
             <View style={styles.dropdownItemContainer}>
                 <Text>{category}</Text>
             </View>
