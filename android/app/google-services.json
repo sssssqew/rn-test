@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "137262950194",
+    "project_id": "rn-todo-457db",
+    "storage_bucket": "rn-todo-457db.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:137262950194:android:d2bd8c4a9f48d60e2dd92b",
+        "android_client_info": {
+          "package_name": "com.learnreactnative"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAa4SQuNdrNvth4TsxqfBIwvteWRFUiOJc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
