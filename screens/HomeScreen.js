@@ -1,5 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react' // 카테고리 저장을 위한 useRef 임포트(수정)
 import { 
+  addData,
+  getCollection,
+  getCurrentTime
+} from '../apis/firebase'
+
+import { 
   SafeAreaView, 
   View, Text, 
   StyleSheet, 
@@ -18,39 +24,38 @@ import DropdownItem from '../components/DropdownItem'
 function HomeScreen({ navigation, caretType, setCaretType }){
   const date = new Date()
   const categories = ['자기계발', '업무', '오락', '여행', '연애', 'IT', '취미']
-  const [todos, setTodos] = useState([
-    {id: 1, title: '공원에 산책가기', category: '여행', createdAt: '2023-08-22', isDone: false},
-    {id: 2, title: '보고서 작성하기', category: '업무', createdAt: '2023-08-22', isDone: true},
-    {id: 3, title: '자기전에 책읽기', category: '자기계발', createdAt: '2023-08-22', isDone: false},
-  ])
+  const [todos, setTodos] = useState([])
   const [todoText, setTodoText] = useState('')
   const [warning, setWarning] = useState(false)
+  const [loading, setLoading ] = useState(true)
+
   // const [category, setCategory] = useState('')
   const category = useRef('') // 카테고리 변수(추가)
 
 
-  const onInsertTodo = (trimedText) => {
+  const onInsertTodo = async (trimedText) => {
     if(!category.current){ // 카테고리를 선택하지 않은 경우(추가)
       setTodoText('카테고리를 먼저 선택해주세요!')
       setWarning(true)
       return 
     }
     if(trimedText && trimedText.length > 3){ // 최소 글자수 제한
-      const nextId = todos.length + 1
-      const todoContents = trimedText.split(',')
-      const createdTime = new Date()
+      // const nextId = todos.length + 1
+      // const todoContents = trimedText.split(',')
+      // const createdTime = new Date()
 
-      const newTodo = {
-        id: todos.length + 1,
-        title: todoContents[0],
-        category: category.current || '자기계발', // 선택한 카테고리 설정 (수정)
-        createdAt: `${createdTime.getFullYear()}-${createdTime.getMonth()+1}-${createdTime.getDate()}`
-      }
-      if(todos.filter(todo => todo.title === newTodo.title).length > 0){
+      if(todos.filter(todo => todo.title === trimedText).length > 0){
         setTodoText('중복된 할일입니다.')
         setWarning(true)
       }else{
-        setTodos([newTodo, ...todos]) // 최신순 정렬하기
+        const newTodo = {
+          title: trimedText,
+          category: category.current || '자기계발', // 선택한 카테고리 설정 (수정)
+          isDone: false,
+          createdAt: getCurrentTime(), // 클라이언트 기준이 아니라 서버기준 저장시각
+          // createdAt: `${createdTime.getFullYear()}-${createdTime.getMonth()+1}-${createdTime.getDate()}`
+        }
+        await addData('todos', newTodo)
         Keyboard.dismiss() // 추가버튼 클릭시 키보드 감추기 
         setTodoText('') // 입력창 초기화
         category.current = '' // 카테고리 초기화 (추가)
@@ -78,6 +83,40 @@ function HomeScreen({ navigation, caretType, setCaretType }){
   useEffect(() => navigation.addListener('focus', () => console.log('페이지 로딩')), [])
 
   useEffect(() => navigation.addListener('blur', () => console.log('페이지 벗어남')), [])
+
+  useEffect(() => {
+    function onResult(querySnapshot){
+      const list = []
+      querySnapshot.forEach(doc => {
+        console.log(doc.data())
+        list.push({
+          ...doc.data(),
+          id: doc.id,
+        })
+      })
+      setTodos(list)
+
+      if (loading) {
+        setLoading(false)
+      }
+    }
+    function onError(error){
+      console.error(`${error} occured when reading todos`)
+    }
+    return getCollection('todos', 
+                          onResult, onError,
+                          null,
+                          {exists: true, condition: ['createdAt', 'asc']},
+                          null)
+  }, [])
+
+  if (loading) {
+    return (
+      <View>
+        <Text>로딩중...</Text>
+      </View> 
+    )
+  }
 
   return (
     <SafeAreaView 

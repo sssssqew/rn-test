@@ -1,15 +1,17 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
+import moment from 'moment'
 
-function TodoItem({ item }){
+function TodoItem({ id, title, category, isDone, createdAt }){
+    console.log("할일 생성시각: ", title, createdAt)
     return (
         <View style={styles.item}>
             <View style={styles.titleMargin}>
-                <Text style={styles.title}>{item.title}</Text>
+                <Text style={styles.title}>{title}</Text>
             </View>
             <View>
-                <Text>{item.category}</Text>
-                <Text style={styles.dateText}>{item.createdAt}</Text>
+                <Text>{category} ({isDone ? "종료": "진행중"})</Text>
+                <Text style={styles.dateText}>{createdAt && moment(createdAt.toDate()).format('hh:mm:ss')}</Text>
             </View>
         </View>
     )
@@ -37,4 +39,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default TodoItem
+export default React.memo(TodoItem)

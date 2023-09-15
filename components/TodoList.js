@@ -7,10 +7,10 @@ function TodoList({ todos }){
         <FlatList
             data={todos}
             style={styles.container}
-            keyExtractor={item => item.id.toString()}
+            keyExtractor={item => item.id}
             ItemSeparatorComponent={() => <View style={styles.line}/>}
             renderItem={({item}) => (
-                <TodoItem item={item}/> // 아이템 각각의 뷰 화면
+                <TodoItem {...item}/> // 아이템 각각의 뷰 화면
             )}
         />
     )
