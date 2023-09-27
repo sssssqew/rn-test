@@ -1,10 +1,9 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
+import { getDayWithoutTime } from '../utils/time'
 
 function DateHeader({ date }){
-  const year = date.getFullYear()
-  const month = date.getMonth() + 1
-  const day = date.getDate()
+  const { year, month, day } = getDayWithoutTime(date)
   
   return (
     <View style={styles.container}>

@@ -1,9 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react' // 카테고리 저장을 위한 useRef 임포트(수정)
 import { 
   addData,
-  getCollection,
-  getCurrentTime
+  getCurrentTime,
+  // getCollection // 주석처리
 } from '../apis/firebase'
+
+import { // 오늘과 내일 날짜기준을 계산하는 유틸리티 함수
+  getToday,
+  getTomorrow
+} from '../utils/time' 
 
 import { 
   SafeAreaView, 
@@ -21,29 +26,30 @@ import TodoInsert from '../components/TodoInsert'
 import TodoList from '../components/TodoList'
 import DropdownItem from '../components/DropdownItem'
 
-function HomeScreen({ navigation, caretType, setCaretType }){
-  const date = new Date()
+function HomeScreen({ navigation, caretType, setCaretType, todos, loading, route }){ // 필요한 데이터 추가 (todos, loading, route)
   const categories = ['자기계발', '업무', '오락', '여행', '연애', 'IT', '취미']
-  const [todos, setTodos] = useState([])
   const [todoText, setTodoText] = useState('')
   const [warning, setWarning] = useState(false)
-  const [loading, setLoading ] = useState(true)
 
-  // const [category, setCategory] = useState('')
-  const category = useRef('') // 카테고리 변수(추가)
+  // 오늘/내일의 날짜를 기준으로 할일목록을 필터링하고 정렬함
+  const category = useRef('') // 카테고리 변수
+  const date = (route.params && route.params.date) ? new Date(route.params.date) : new Date()
+  const today = getToday(date) // 시간제외
+  const tomorrow = getTomorrow(getToday(date))
+  const todosToday = todos.filter(todo => todo.createdAt?.toDate() >= today && todo.createdAt?.toDate() < tomorrow)
+  const todosTodayLatest = [...todosToday] // 원본복사
+  todosTodayLatest.sort((a, b) => b.createdAt.seconds - a.createdAt.seconds) // 최신순 정렬
 
+  console.log("현재 선택날짜: ", date)
+  console.log("날짜비교: ", date.getTime(), today.getTime() != getToday(new Date()).getTime())
 
   const onInsertTodo = async (trimedText) => {
-    if(!category.current){ // 카테고리를 선택하지 않은 경우(추가)
+    if(!category.current){ // 카테고리를 선택하지 않은 경우
       setTodoText('카테고리를 먼저 선택해주세요!')
       setWarning(true)
       return 
     }
     if(trimedText && trimedText.length > 3){ // 최소 글자수 제한
-      // const nextId = todos.length + 1
-      // const todoContents = trimedText.split(',')
-      // const createdTime = new Date()
-
       if(todos.filter(todo => todo.title === trimedText).length > 0){
         setTodoText('중복된 할일입니다.')
         setWarning(true)
@@ -53,7 +59,6 @@ function HomeScreen({ navigation, caretType, setCaretType }){
           category: category.current || '자기계발', // 선택한 카테고리 설정 (수정)
           isDone: false,
           createdAt: getCurrentTime(), // 클라이언트 기준이 아니라 서버기준 저장시각
-          // createdAt: `${createdTime.getFullYear()}-${createdTime.getMonth()+1}-${createdTime.getDate()}`
         }
         await addData('todos', newTodo)
         Keyboard.dismiss() // 추가버튼 클릭시 키보드 감추기 
@@ -83,33 +88,7 @@ function HomeScreen({ navigation, caretType, setCaretType }){
   useEffect(() => navigation.addListener('focus', () => console.log('페이지 로딩')), [])
 
   useEffect(() => navigation.addListener('blur', () => console.log('페이지 벗어남')), [])
-
-  useEffect(() => {
-    function onResult(querySnapshot){
-      const list = []
-      querySnapshot.forEach(doc => {
-        console.log(doc.data())
-        list.push({
-          ...doc.data(),
-          id: doc.id,
-        })
-      })
-      setTodos(list)
-
-      if (loading) {
-        setLoading(false)
-      }
-    }
-    function onError(error){
-      console.error(`${error} occured when reading todos`)
-    }
-    return getCollection('todos', 
-                          onResult, onError,
-                          null,
-                          {exists: true, condition: ['createdAt', 'asc']},
-                          null)
-  }, [])
-
+  
   if (loading) {
     return (
       <View>
@@ -144,13 +123,19 @@ function HomeScreen({ navigation, caretType, setCaretType }){
           </View>
         )}
         <DateHeader date={date}/>
-        {todos.length === 0 ? <Default/> : <TodoList todos={todos} />}
+        {/* 해당날짜 기준 최신순으로 정렬된 할일목록 */}
+        {todosTodayLatest.length === 0 ? 
+            <Default/> : 
+            <TodoList todos={todosTodayLatest} 
+        />}
+        {/* 필터링된 할일목록의 날짜와 현재 날짜가 동일하지 않은 경우 */}
         <TodoInsert 
           onInsertTodo={onInsertTodo} 
           todoText={todoText} 
           setTodoText={setTodoText} 
           warning={warning} 
-          setWarning={setWarning}/>
+          setWarning={setWarning}
+          disabled={today.getTime()!==getToday(new Date()).getTime()}/> 
     </SafeAreaView>
   )
 }
