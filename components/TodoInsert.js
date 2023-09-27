@@ -23,7 +23,7 @@ function TodoInsert({ onInsertTodo, todoText, setTodoText, warning, setWarning, 
       setWarning(false)
     }
   }
-  const hideKeyboard = () => {
+  const hideKeyboard = (e) => {
     Keyboard.dismiss()
   }
   console.log(todoText)

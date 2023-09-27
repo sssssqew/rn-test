@@ -2,7 +2,7 @@ import React from 'react'
 import { SafeAreaView, View, Text, StyleSheet, StatusBar, Button } from 'react-native'
 
 function CalendarScreen({navigation}){
-  const testDate = "2023-09-25"
+  const testDate = "2023-09-18"
   const getTodoForDate = () => {
     navigation.navigate('Home', {
       date: testDate

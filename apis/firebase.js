@@ -7,6 +7,9 @@ export const addData = async (collections, data) => {
     await getRef(collections).add(data)
     console.log(`${collections} : ${JSON.stringify(data)} added in firestore!`)
 }
+export const updateDate = async (collections, id, data) => {
+    await getRef(collections).doc(id).update(data)
+}
 export const getCollection = (collections, onResult, onError, query, order, limit) => {
     let ref = getRef(collections)
     
