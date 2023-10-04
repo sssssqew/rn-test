@@ -10,6 +10,9 @@ export const addData = async (collections, data) => {
 export const updateDate = async (collections, id, data) => {
     await getRef(collections).doc(id).update(data)
 }
+export const removeData = async (collections, id) => {
+    await getRef(collections).doc(id).delete()
+}
 export const getCollection = (collections, onResult, onError, query, order, limit) => {
     let ref = getRef(collections)
     

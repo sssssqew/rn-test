@@ -2,7 +2,7 @@ import React from 'react'
 import { FlatList, View, Text, StyleSheet } from 'react-native'
 import TodoItem from './TodoItem'
 
-function TodoList({ todos }){
+function TodoList({ todos, removeTodo }){
     return (
         <FlatList
             data={todos}
@@ -10,7 +10,7 @@ function TodoList({ todos }){
             keyExtractor={item => item.id}
             ItemSeparatorComponent={() => <View style={styles.line}/>}
             renderItem={({item}) => (
-                <TodoItem {...item}/> // 아이템 각각의 뷰 화면
+                <TodoItem {...item} removeTodo={removeTodo}/> // 아이템 각각의 뷰 화면
             )}
         />
     )

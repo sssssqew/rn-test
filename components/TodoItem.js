@@ -8,7 +8,7 @@ import {
 
 let lastTap = null 
 
-function TodoItem({ id, title, category, isDone, createdAt }){
+function TodoItem({ id, title, category, isDone, createdAt, removeTodo }){
     console.log("할일 생성시각: ", title, createdAt)
     const [doubleTabbed, setDoubleTabbed] = useState(false)
     const [text, setText] = useState("")
@@ -67,13 +67,17 @@ function TodoItem({ id, title, category, isDone, createdAt }){
         Keyboard.dismiss()
         // inputRef.current.blur()
       }
+    const handleRemove = (e) => {
+        e.stopPropagation()
+        removeTodo(id, title)
+    }
     useEffect(() => {
         if(inputRef.current){
             inputRef.current.focus()
         }
     })
     return (
-        <TouchableWithoutFeedback onPress={handlePress} >
+        <TouchableWithoutFeedback onPress={handlePress} onLongPress={handleRemove}>
             <View style={styles.item}>
                 <View style={styles.titleMargin} onTouchStart={(e) => {e.stopPropagation()}}>
                     {doubleTabbed ? 

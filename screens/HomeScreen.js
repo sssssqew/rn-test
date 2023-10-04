@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react' // 카테고리 저장을 위한 useRef 임포트(수정)
 import { 
   addData,
+  removeData,
   getCurrentTime,
   // getCollection // 주석처리
 } from '../apis/firebase'
@@ -17,7 +18,8 @@ import {
   StatusBar, 
   Keyboard, 
   FlatList,
-  TouchableHighlight 
+  TouchableHighlight,
+    Modal, Pressable
 } from 'react-native'
 
 import DateHeader from '../components/DateHeader'
@@ -30,6 +32,8 @@ function HomeScreen({ navigation, caretType, setCaretType, todos, loading, route
   const categories = ['자기계발', '업무', '오락', '여행', '연애', 'IT', '취미']
   const [todoText, setTodoText] = useState('')
   const [warning, setWarning] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [todoToRemove, setTodoToRemove] = useState({id: null, title: ''})
 
   // 오늘/내일의 날짜를 기준으로 할일목록을 필터링하고 정렬함
   const category = useRef('') // 카테고리 변수
@@ -84,6 +88,16 @@ function HomeScreen({ navigation, caretType, setCaretType, todos, loading, route
     console.log('홈화면을 터치하셨습니다.')
     closeDropdown()
   }
+  const removeTodo = (id, title) => {
+    setModalOpen(true)
+    setTodoToRemove({id, title})
+    console.log(`할일 [${title}] 제거`)
+  }
+  const handleRemove = () => {
+    setModalOpen(false)
+    setTodoToRemove({id: null, title: ''})
+    removeData('todos', todoToRemove.id)
+  }
 
   useEffect(() => navigation.addListener('focus', () => console.log('페이지 로딩')), [])
 
@@ -102,6 +116,33 @@ function HomeScreen({ navigation, caretType, setCaretType, todos, loading, route
         style={styles.block} 
         onTouchStart={handleOutSideOfMenu}>
       <StatusBar backgroundColor="#a8c8ffff"></StatusBar>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalOpen}
+        onRequestClose={() => {
+          Alert.alert('Modal has been closed.');
+          setModalOpen(!modalOpen);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.guideText}>할일 "{todoToRemove.title}" 을 제거하시겠습니까?</Text>
+            <View style={styles.alignHorizontal}>
+              <Pressable
+                style={[styles.button, styles.buttonClose, styles.remove]}
+                onPress={handleRemove}>
+                <Text style={styles.textStyle}>삭제</Text>
+              </Pressable>
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => setModalOpen(false)}>
+                <Text style={styles.textStyle}>닫기</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
       
         {caretType 
         && (
@@ -126,7 +167,7 @@ function HomeScreen({ navigation, caretType, setCaretType, todos, loading, route
         {/* 해당날짜 기준 최신순으로 정렬된 할일목록 */}
         {todosTodayLatest.length === 0 ? 
             <Default/> : 
-            <TodoList todos={todosTodayLatest} 
+            <TodoList todos={todosTodayLatest} removeTodo={removeTodo}
         />}
         {/* 필터링된 할일목록의 날짜와 현재 날짜가 동일하지 않은 경우 */}
         <TodoInsert 
@@ -158,6 +199,63 @@ const styles = StyleSheet.create({
     top: -15,
     borderRadius: 5,
     margin: 15
-  }
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 50,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  alignHorizontal: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end'
+  },
+  guideText: {
+    fontWeight: 'bold',
+    fontSize: 15
+  },
+  button: {
+    width: 70,
+    height: 40,
+    borderRadius: 10,
+    padding: 0,
+    elevation: 2,
+    marginTop: 30,
+    marginRight: 5,
+    justifyContent: 'center'
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#a8c8ffff',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  remove: {
+    backgroundColor: 'red'
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
 })
 export default HomeScreen
