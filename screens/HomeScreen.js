@@ -26,7 +26,7 @@ import DateHeader from '../components/DateHeader'
 import Default from '../components/Default'
 import TodoInsert from '../components/TodoInsert'
 import TodoList from '../components/TodoList'
-import DropdownItem from '../components/DropdownItem'
+import DropdownList from '../components/DropdownList'
 
 function HomeScreen({ navigation, caretType, setCaretType, todos, loading, route }){ // 필요한 데이터 추가 (todos, loading, route)
   const categories = ['자기계발', '업무', '오락', '여행', '연애', 'IT', '취미']
@@ -144,25 +144,7 @@ function HomeScreen({ navigation, caretType, setCaretType, todos, loading, route
         </View>
       </Modal>
       
-        {caretType 
-        && (
-            <View 
-              style={styles.dropdownShadow}
-              onTouchStart={(e) => { // 터치 시작점 설정 : 캡쳐링 방지 (추가)
-                console.log('여기를 지나침')
-                e.stopPropagation() // 터치 버블링 방지
-              }}
-              >
-              <FlatList
-                data={categories} 
-                keyExtractor={item => item}
-                renderItem={({item}) => (
-                  <DropdownItem category={item} selectCategory={(e) => selectCategory(item, e)}/> // 아이템 각각의 뷰 화면 : 카테고리 선택시 이벤트핸들러 함수 등록 (수정)
-                )}
-                style={styles.dropdownList}
-              />
-          </View>
-        )}
+        {caretType && <DropdownList categories={categories} selectCategory={selectCategory} top={-15}/>}
         <DateHeader date={date}/>
         {/* 해당날짜 기준 최신순으로 정렬된 할일목록 */}
         {todosTodayLatest.length === 0 ? 
@@ -176,7 +158,7 @@ function HomeScreen({ navigation, caretType, setCaretType, todos, loading, route
           setTodoText={setTodoText} 
           warning={warning} 
           setWarning={setWarning}
-          disabled={today.getTime()!==getToday(new Date()).getTime()}/> 
+          disabled={today.getTime()<getToday(new Date()).getTime()}/> 
     </SafeAreaView>
   )
 }
@@ -184,21 +166,6 @@ function HomeScreen({ navigation, caretType, setCaretType, todos, loading, route
 const styles = StyleSheet.create({
   block: {
     flex: 1,
-  },
-  dropdownList: {
-    padding: 5
-  },
-  dropdownShadow: {
-    shadowOffset: { width: 0, height: 20 },
-    shadowColor: '#000',
-    shadowOpacity: 0.25,
-    backgroundColor : "#fff", // invisible color
-    zIndex: 1,
-    elevation: 1,
-    position: 'absolute',
-    top: -15,
-    borderRadius: 5,
-    margin: 15
   },
   centeredView: {
     flex: 1,
