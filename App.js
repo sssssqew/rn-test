@@ -90,7 +90,7 @@ export default function App() {
             color: '#fff'
           },
         }}/>
-        <Tab.Screen name="DashBoard" component={DashBoardSceen} options={{
+        <Tab.Screen name="DashBoard" children={(props) => <DashBoardSceen todos={todos}/>} options={{
           title: '통계',
           tabBarIcon: ({ color, size }) => <Icon name="dashboard" color={color} size={size}/>
         }}/>
