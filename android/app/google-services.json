@@ -12,7 +12,20 @@
           "package_name": "com.learnreactnative"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "137262950194-of9ufp3g2ds13pe5fl8vljct3fi1ijd4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.learnreactnative",
+            "certificate_hash": "1346faf79f5c45ca4a98e1869e8714ac9a6e97df"
+          }
+        },
+        {
+          "client_id": "137262950194-gcouccatiffjp4ei8aqfi05uruv5j4dl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAa4SQuNdrNvth4TsxqfBIwvteWRFUiOJc"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "137262950194-gcouccatiffjp4ei8aqfi05uruv5j4dl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
