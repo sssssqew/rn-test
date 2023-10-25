@@ -16,13 +16,12 @@ function SettingsScreen({navigation}){
   
   const signInWithGoogle = async () => {
     try {
-      setIsSigningIn(true)
       await GoogleSignin.hasPlayServices()
       const userInfoFromGoogle = await GoogleSignin.signIn()
       if(userInfoFromGoogle){
         console.log("사용자 사진: ", userInfoFromGoogle.user.photo)
         setUserInfo(userInfoFromGoogle)
-        setIsSigningIn(false)
+        setIsSigningIn(true)
       }
       
     } catch (error) {
@@ -41,6 +40,7 @@ function SettingsScreen({navigation}){
     try {
       await GoogleSignin.signOut()
       setUserInfo(null)
+      setIsSigningIn(false)
     } catch (error) {
       console.error('failed to logout, error: ', error)
     }
@@ -63,15 +63,16 @@ function SettingsScreen({navigation}){
         />
         {userInfo && userInfo.user && 
         (<View style={styles.profileInfo}>
-          <View style={styles.profileText}>
-            <Text style={styles.info}>사용자 이메일 - {userInfo.user.email}</Text>
-            <Text style={styles.info}>사용자 아이디 - {userInfo.user.id}</Text>
-            <Text style={styles.info}>사용자 이름 - {userInfo.user.name}</Text>
+          <View>
+            <Image source={{uri: userInfo.user.photo}} style={styles.profileImg}/>
           </View>
-          <Image source={{uri: userInfo.user.photo}} style={styles.profileImg}/>
+          <View style={styles.profileText}>
+            <Text style={[styles.info, { fontWeight: 'bold', fontSize: 20 }]}>{userInfo.user.name}</Text>
+            <Text style={styles.info}>{userInfo.user.email}</Text>
+          </View>
         </View>)
         }
-        <TouchableHighlight onPress={signOutWithGoogle}>
+        <TouchableHighlight onPress={signOutWithGoogle} style={{flexDirection: 'row'}}>
           <View style={[styles.logoutBtn, { backgroundColor: userInfo ? "#a8c8ffff" : 'lightgrey' }]}>
             <Text style={styles.logoutBtnText}>구글 로그아웃</Text>
           </View>
@@ -94,9 +95,13 @@ const styles = StyleSheet.create({
   profileInfo: {
     marginVertical: 20,
     marginHorizontal: 'auto',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+    backgroundColor: '#eee'
   },
   profileText: {
-    backgroundColor: '#eee',
     borderRadius: 10,
     padding: 20,
   },
@@ -105,19 +110,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   profileImg: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     marginLeft: 'auto',
     marginRight: 'auto',
   },
   logoutBtn: {
-    width: 200,
+    flex: 1,
     height: 35,
     borderRadius: 3,
     marginLeft: 'auto',
     marginRight: 'auto',
-    marginTop: 30,
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
