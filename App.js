@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View } from 'react-native'
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -49,6 +49,14 @@ export default function App() {
                           null, null, null)
   }, [])
 
+  if (loading) {
+    return (
+      <View style={styles.block}>
+        <ActivityIndicator size="large" color="#0047AB"/>
+        <Text style={styles.loadingText}>Loading ...</Text>
+      </View> 
+    )
+  }
 
   return (
     <NavigationContainer>
@@ -102,3 +110,19 @@ export default function App() {
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  block: {
+    flex: 1,
+    backgroundColor: '#a8c8ffff',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginTop: 10,
+    textAlign: 'center'
+  }
+})

@@ -103,13 +103,13 @@ function HomeScreen({ navigation, caretType, setCaretType, todos, loading, route
 
   useEffect(() => navigation.addListener('blur', () => console.log('페이지 벗어남')), [])
   
-  if (loading) {
-    return (
-      <View>
-        <Text>로딩중...</Text>
-      </View> 
-    )
-  }
+  // if (loading) {
+  //   return (
+  //     <View>
+  //       <Text>로딩중...</Text>
+  //     </View> 
+  //   )
+  // }
 
   return (
     <SafeAreaView 
