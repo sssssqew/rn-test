@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { SafeAreaView, View, Text, StyleSheet, StatusBar, ScrollView, Dimensions, ImageBackground  } from 'react-native'
 import LandingPage from '../components/LandingPage'
 import landingData from '../data/landingData'
+import LoginButton from '../components/LoginButton';
 
 function LandingScreen({navigation}){
     const { width, height } = Dimensions.get('window')
@@ -29,11 +30,12 @@ function LandingScreen({navigation}){
                     showsHorizontalScrollIndicator={false} // 스크롤바 숨기기
                     onScroll={setCurrentPage}
                 >
-                    {landingData.map(page => (
+                    {landingData.map((page, index) => (
                         <LandingPage
                             width={width}
                             height={height}
                             {...page}
+                            key={index}
                         />
                     ))}
                 </ScrollView>
@@ -43,6 +45,8 @@ function LandingScreen({navigation}){
                         <View key={index} style={[styles.scrollIndicator, { opacity: currentPageIndex === index ? 1: 0.3}]}></View>
                     ))}
                 </View>
+
+                <LoginButton navigation={navigation}/>
             </SafeAreaView>
         </>
     )
@@ -66,6 +70,7 @@ const styles = StyleSheet.create({
     borderRadius: 10 / 2,
     backgroundColor: '#aaa',
     marginLeft: 10,
-  }
+  },
+
 })
 export default LandingScreen

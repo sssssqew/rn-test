@@ -20,7 +20,7 @@ import { // 할일목록 조회를 위한 유틸리티 함수 추가
 // const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator()
 
-export default function App() {
+export default function App({navigation}) {
   const [todos, setTodos] = useState([]) // 할일목록 상태 (HomeScreen -> App 이동)
   const [loading, setLoading] = useState(true) // 할일목록 상태 (HomeScreen -> App 이동)
   
@@ -59,7 +59,7 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer>
+    <>
       <Tab.Navigator initialRouteName = "Home" screenOptions={{
         tabBarActiveTintColor: '#a8c8ffff',
         // tabBarStyle: {
@@ -107,7 +107,7 @@ export default function App() {
           tabBarIcon: ({ color, size }) => <Icon name="settings" color={color} size={size}/>
         }}/>
       </Tab.Navigator>
-    </NavigationContainer>
+    </>
   );
 }
 
