@@ -27,10 +27,11 @@ const styles = StyleSheet.create({
         color: '#fff'
     },
     description: {
-        fontSize: 20,
-        fontWeight: 'bold',
+        fontFamily: 'NanumPenScript-Regular',
+        fontSize: 33,
+        fontWeight: 'normal',
         marginTop: 10,
         color: '#fff',
-        textAlign: 'center'
+        textAlign: 'center',
     },
 })
