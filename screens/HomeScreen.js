@@ -8,7 +8,8 @@ import {
 
 import { // 오늘과 내일 날짜기준을 계산하는 유틸리티 함수
   getToday,
-  getTomorrow
+  getTomorrow,
+  getTodosToday
 } from '../utils/time' 
 
 import { 
@@ -28,7 +29,7 @@ import TodoInsert from '../components/TodoInsert'
 import TodoList from '../components/TodoList'
 import DropdownList from '../components/DropdownList'
 
-function HomeScreen({ navigation, caretType, setCaretType, todos, loading, route }){ // 필요한 데이터 추가 (todos, loading, route)
+function HomeScreen({ navigation, caretType, setCaretType, todos, loading, route, setNumOfTodosToday }){ // 필요한 데이터 추가 (todos, loading, route)
   const categories = ['자기계발', '업무', '오락', '여행', '연애', 'IT', '취미']
   const [todoText, setTodoText] = useState('')
   const [warning, setWarning] = useState(false)
@@ -38,9 +39,7 @@ function HomeScreen({ navigation, caretType, setCaretType, todos, loading, route
   // 오늘/내일의 날짜를 기준으로 할일목록을 필터링하고 정렬함
   const category = useRef('') // 카테고리 변수
   const date = (route.params && route.params.date) ? new Date(route.params.date) : new Date()
-  const today = getToday(date) // 시간제외
-  const tomorrow = getTomorrow(getToday(date))
-  const todosToday = todos.filter(todo => todo.createdAt?.toDate() >= today && todo.createdAt?.toDate() < tomorrow)
+  const {todosToday, today} = getTodosToday(date, todos)
   const todosTodayLatest = [...todosToday] // 원본복사
   todosTodayLatest.sort((a, b) => b.createdAt.seconds - a.createdAt.seconds) // 최신순 정렬
 
@@ -102,6 +101,10 @@ function HomeScreen({ navigation, caretType, setCaretType, todos, loading, route
   useEffect(() => navigation.addListener('focus', () => console.log('페이지 로딩')), [])
 
   useEffect(() => navigation.addListener('blur', () => console.log('페이지 벗어남')), [])
+
+  useEffect(() => {
+    setNumOfTodosToday(todosToday.length)
+  })
 
   return (
     <SafeAreaView 

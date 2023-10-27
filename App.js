@@ -27,6 +27,7 @@ export default function App({navigation}) {
   const [caretType, setCaretType] = useState(false)
   const [yearCaret, setYearCaret] = useState(false)
   const [monthCaret, setMonthCaret] = useState(false)
+  const [numOfTodosToday, setNumOfTodosToday] = useState(0)
 
   useEffect(() => { // 할일목록 조회 (HomeScreen -> App 이동)
     function onResult(querySnapshot){
@@ -66,7 +67,7 @@ export default function App({navigation}) {
         //   backgroundColor: '#333'
         // }
       }}>
-        <Tab.Screen name="Home" children={(props) => <HomeScreen {...props} caretType={caretType} setCaretType={setCaretType} todos={todos} loading={loading}/>} options={{
+        <Tab.Screen name="Home" children={(props) => <HomeScreen {...props} caretType={caretType} setCaretType={setCaretType} todos={todos} loading={loading} setNumOfTodosToday={setNumOfTodosToday}/>} options={{
           title: '홈',
           tabBarIcon: ({ color, size }) => <Icon name="home" color={color} size={size}/>,
           headerTitle: (props) => <DropdownCategory {...props} caretType={caretType} setCaretType={setCaretType} categoryTitle="카테고리"/>,
@@ -77,6 +78,7 @@ export default function App({navigation}) {
             fontWeight: 'bold',
             color: '#fff'
           },
+          tabBarBadge: numOfTodosToday
         }}/>
         <Tab.Screen name="Calendar" children={(props) => <CalendarScreen 
                                                           {...props}
