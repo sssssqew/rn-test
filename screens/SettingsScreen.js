@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView, View, Text, StyleSheet, StatusBar, Button, Image, TouchableHighlight } from 'react-native'
-import { GoogleSignin, GoogleSigninButton  } from '@react-native-google-signin/google-signin'
+import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import auth from '@react-native-firebase/auth'
 
 function SettingsScreen({navigation}){
   const [userInfo, setUserInfo] = useState(null) 
-  const [isSigningIn, setIsSigningIn] = useState(false) // 로그인 여부
-
+ 
   const googleSigninConfigure = () => { 
     GoogleSignin.configure({
       webClientId:
@@ -14,53 +13,30 @@ function SettingsScreen({navigation}){
     })
   }
   
-  const signInWithGoogle = async () => {
-    try {
-      await GoogleSignin.hasPlayServices()
-      const userInfoFromGoogle = await GoogleSignin.signIn()
-      if(userInfoFromGoogle){
-        console.log("사용자 사진: ", userInfoFromGoogle.user.photo)
-        setUserInfo(userInfoFromGoogle)
-        setIsSigningIn(true)
-      }
-      
-    } catch (error) {
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        console.log('user cancelled the login flow')
-      } else if (error.code === statusCodes.IN_PROGRESS) {
-        console.log('sign in is in progress already')
-      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        console.log('play services not available or outdated')
-      } else {
-        console.log('some other error happened')
-      }
-    }
-  }
   const signOutWithGoogle = async () => {
     try {
       await GoogleSignin.signOut()
       setUserInfo(null)
-      setIsSigningIn(false)
+      navigation.navigate('Landing')
     } catch (error) {
       console.error('failed to logout, error: ', error)
     }
   }
 
+  getCurrentUser = async () => {
+    const currentUser = await GoogleSignin.getCurrentUser()
+    setUserInfo(currentUser)
+  }
+
   useEffect(() => {
     googleSigninConfigure()
+    getCurrentUser()
   }, [])
 
   return (
     <SafeAreaView style={styles.block}>
       <StatusBar backgroundColor="#a8c8ffff"></StatusBar>
       <View>
-        <GoogleSigninButton
-          size={GoogleSigninButton.Size.Wide}
-          color={GoogleSigninButton.Color.Dark}
-          onPress={signInWithGoogle}
-          disabled={isSigningIn}
-          style={styles.signInBtn}
-        />
         {userInfo && userInfo.user && 
         (<View style={styles.profileInfo}>
           <View>
@@ -72,12 +48,12 @@ function SettingsScreen({navigation}){
           </View>
         </View>)
         }
-        <TouchableHighlight onPress={signOutWithGoogle} style={{flexDirection: 'row'}}>
-          <View style={[styles.logoutBtn, { backgroundColor: userInfo ? "#a8c8ffff" : 'lightgrey' }]}>
-            <Text style={styles.logoutBtnText}>구글 로그아웃</Text>
-          </View>
-        </TouchableHighlight>
       </View>
+      <TouchableHighlight onPress={signOutWithGoogle} style={styles.logoutBtnWrapper}>
+          <View style={[styles.logoutBtn, { backgroundColor: "#a8c8ffff" }]}>
+            <Text style={styles.logoutBtnText}>로그아웃</Text>
+          </View>
+      </TouchableHighlight>
     </SafeAreaView>
   )
 }
@@ -85,21 +61,15 @@ function SettingsScreen({navigation}){
 const styles = StyleSheet.create({
   block: {
     flex: 1,
-    alignItems: 'center'
-  },
-  signInBtn: {
-    marginTop: 10,
-    marginLeft: 'auto',
-    marginRight: 'auto'
+    justifyContent: 'flex-start',
   },
   profileInfo: {
-    marginVertical: 20,
     marginHorizontal: 'auto',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: '#eee'
+    backgroundColor: '#eee',
   },
   profileText: {
     borderRadius: 10,
@@ -116,12 +86,14 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
   },
+  logoutBtnWrapper: {
+    flexDirection: 'row',
+    position: 'absolute',
+    bottom: 0
+  },
   logoutBtn: {
     flex: 1,
     height: 35,
-    borderRadius: 3,
-    marginLeft: 'auto',
-    marginRight: 'auto',
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',

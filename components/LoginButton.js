@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { View, Button, StyleSheet, Alert } from 'react-native'
-import { GoogleSignin, GoogleSigninButton  } from '@react-native-google-signin/google-signin'
+import { GoogleSignin, GoogleSigninButton, statusCodes  } from '@react-native-google-signin/google-signin'
 
 function LoginButton({navigation}){
     const googleSigninConfigure = () => { 

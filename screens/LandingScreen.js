@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { SafeAreaView, View, Text, StyleSheet, StatusBar, ScrollView, Dimensions, ImageBackground  } from 'react-native'
 import LandingPage from '../components/LandingPage'
 import landingData from '../data/landingData'
 import LoginButton from '../components/LoginButton';
+
+import { GoogleSignin } from '@react-native-google-signin/google-signin'
 
 function LandingScreen({navigation}){
     const { width, height } = Dimensions.get('window')
@@ -18,6 +20,15 @@ function LandingScreen({navigation}){
             setCurrentPageIndex(nextPageIndex)
         }
     }
+
+    const getUserInfo = async () => await GoogleSignin.getCurrentUser()
+    useEffect(() => {
+        const user = getUserInfo()
+        if(user){
+            navigation.navigate('App')
+        }
+    }, [])
+
     return (
         <>
             <StatusBar hidden></StatusBar>
