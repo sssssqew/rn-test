@@ -23,10 +23,16 @@ function LandingScreen({navigation}){
 
     const getUserInfo = async () => await GoogleSignin.getCurrentUser()
     useEffect(() => {
-        const user = getUserInfo()
-        if(user){
-            navigation.navigate('App')
-        }
+        const result = getUserInfo()
+        // if(user){
+        //     navigation.navigate('App')
+        // }
+        result.then(user => {
+            console.log('user : ',user)
+            if(user){
+              navigation.navigate('App');
+            }
+          })
     }, [])
 
     return (
