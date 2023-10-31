@@ -114,14 +114,16 @@ const styles = StyleSheet.create({
         // borderBottomColor: '#a8c8ffff',
     },
     titleMargin: {
-        marginRight: 10
+        marginRight: 10,
+        flex: 1
     },
     title: {
         fontWeight: 'bold',
         fontSize: 20,
     },
     dateText: {
-        fontSize: 12
+        fontSize: 12,
+        paddingRight: 10
     }
 })
 
