@@ -68,6 +68,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: '#fff',
+    position: 'absolute',
+    bottom: 0, left: 0, right: 0
   },
   input: {
     color: '#a8c8ffff',
