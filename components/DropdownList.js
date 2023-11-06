@@ -32,8 +32,8 @@ const styles = StyleSheet.create({
         shadowColor: '#000',
         shadowOpacity: 0.25,
         backgroundColor : "#fff", // invisible color
-        zIndex: 1,
-        elevation: 1,
+        zIndex: 2,
+        elevation: 2,
         position: 'absolute',
         borderRadius: 5,
         margin: 15,
