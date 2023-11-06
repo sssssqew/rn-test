@@ -15,8 +15,8 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
     backgroundColor: '#a8c8ffff',
-    zIndex: 0,
-    elevation: 0
+    zIndex: 1,
+    elevation: 1
   },
   dateText: {
     fontSize: 30,
