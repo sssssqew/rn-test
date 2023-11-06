@@ -9,7 +9,8 @@ import {
 import { // 오늘과 내일 날짜기준을 계산하는 유틸리티 함수
   getToday,
   getTomorrow,
-  getTodosToday
+  getTodosToday,
+  getTodosBySpecificDate
 } from '../utils/time' 
 
 import { 
@@ -39,12 +40,12 @@ function HomeScreen({ navigation, caretType, setCaretType, todos, loading, route
   // 오늘/내일의 날짜를 기준으로 할일목록을 필터링하고 정렬함
   const category = useRef('') // 카테고리 변수
   const date = (route.params && route.params.date) ? new Date(route.params.date) : new Date()
-  const {todosToday, today} = getTodosToday(date, todos)
+  const {todosToday, today} = getTodosBySpecificDate(date, todos) // dateOfTodo 기준으로 필터링
   const todosTodayLatest = [...todosToday] // 원본복사
-  todosTodayLatest.sort((a, b) => b.createdAt.seconds - a.createdAt.seconds) // 최신순 정렬
+  todosTodayLatest.sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds) // 최신순 정렬 (업데이트되는 시간차 때문에 createdAt 이 null 일수 있음)
 
-  console.log("현재 선택날짜: ", date)
-  console.log("날짜비교: ", date.getTime(), today.getTime() != getToday(new Date()).getTime())
+  console.log("현재 선택날짜: ", date, todosToday)
+  console.log("날짜비교: ", date.getTime(), today.getTime() < getToday(new Date()).getTime())
 
   const onInsertTodo = async (trimedText) => {
     if(!category.current){ // 카테고리를 선택하지 않은 경우
@@ -61,7 +62,8 @@ function HomeScreen({ navigation, caretType, setCaretType, todos, loading, route
           title: trimedText,
           category: category.current || '자기계발', // 선택한 카테고리 설정 (수정)
           isDone: false,
-          createdAt: getCurrentTime(), // 클라이언트 기준이 아니라 서버기준 저장시각
+          createdAt: getCurrentTime(), // 클라이언트 기준이 아니라 서버기준 저장시각,
+          dateOfTodo: date // createdAt 기준으로 todo 를 필터링하는게 아니라 해당 필드 기준으로 걸러냄
         }
         await addData('todos', newTodo)
         Keyboard.dismiss() // 추가버튼 클릭시 키보드 감추기 

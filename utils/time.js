@@ -22,3 +22,9 @@ export const getTodosToday = (date, todos) => {
     const todosToday = todos.filter(todo => todo.createdAt?.toDate() >= today && todo.createdAt?.toDate() < tomorrow)
     return {todosToday, today}
 }
+export const getTodosBySpecificDate = (date, todos) => {
+    const today = getToday(date) // 시간제외
+    const tomorrow = getTomorrow(getToday(date))
+    const todosToday = todos.filter(todo => todo.dateOfTodo?.toDate() >= today && todo.dateOfTodo?.toDate() < tomorrow)
+    return {todosToday, today}
+}
