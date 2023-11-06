@@ -30,7 +30,7 @@ import TodoInsert from '../components/TodoInsert'
 import TodoList from '../components/TodoList'
 import DropdownList from '../components/DropdownList'
 
-function HomeScreen({ navigation, caretType, setCaretType, todos, loading, route, setNumOfTodosToday }){ // 필요한 데이터 추가 (todos, loading, route)
+function HomeScreen({ navigation, caretType, setCaretType, todos, loading, route, setNumOfTodosToday, userInfo }){ // 필요한 데이터 추가 (todos, loading, route)
   const categories = ['자기계발', '업무', '오락', '여행', '연애', 'IT', '취미']
   const [todoText, setTodoText] = useState('')
   const [warning, setWarning] = useState(false)
@@ -63,7 +63,8 @@ function HomeScreen({ navigation, caretType, setCaretType, todos, loading, route
           category: category.current || '자기계발', // 선택한 카테고리 설정 (수정)
           isDone: false,
           createdAt: getCurrentTime(), // 클라이언트 기준이 아니라 서버기준 저장시각,
-          dateOfTodo: date // createdAt 기준으로 todo 를 필터링하는게 아니라 해당 필드 기준으로 걸러냄
+          dateOfTodo: date, // createdAt 기준으로 todo 를 필터링하는게 아니라 해당 필드 기준으로 걸러냄
+          userEmail: userInfo.email // 할일을 생성한 사용자 필드 추가 
         }
         await addData('todos', newTodo)
         Keyboard.dismiss() // 추가버튼 클릭시 키보드 감추기 

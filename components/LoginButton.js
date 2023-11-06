@@ -17,7 +17,7 @@ function LoginButton({navigation}){
 
             if(userInfoFromGoogle){
                 console.log("사용자 연락처: ", userInfoFromGoogle.user)
-                navigation.navigate('App')
+                navigation.navigate('App', { userInfo: userInfoFromGoogle.user})
             }
         } catch (error) {
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {

@@ -20,7 +20,7 @@ import { // 할일목록 조회를 위한 유틸리티 함수 추가
 // const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator()
 
-export default function App({navigation}) {
+export default function App({navigation, route}) {
   const [todos, setTodos] = useState([]) // 할일목록 상태 (HomeScreen -> App 이동)
   const [loading, setLoading] = useState(true) // 할일목록 상태 (HomeScreen -> App 이동)
   
@@ -28,6 +28,9 @@ export default function App({navigation}) {
   const [yearCaret, setYearCaret] = useState(false)
   const [monthCaret, setMonthCaret] = useState(false)
   const [numOfTodosToday, setNumOfTodosToday] = useState(0)
+
+  const { userInfo } = route.params
+  console.log("로그인한 사용자 정보: ", userInfo)
 
   useEffect(() => { // 할일목록 조회 (HomeScreen -> App 이동)
     function onResult(querySnapshot){
@@ -45,9 +48,11 @@ export default function App({navigation}) {
     function onError(error){
       console.error(`${error} occured when reading todos`)
     }
+    // 문제점 : onSnapshot 을 사용시 다른 사용자가 할일을 추가하면 전체할일목록이 업데이트되기 때문에 나의 화면도 새로고침됨 
     return getCollection('todos', 
                           onResult, onError,
-                          null, null, null)
+                          { exists: true, condition: [['userEmail', '==', userInfo.email]] },
+                          null, null)
   }, [])
 
   if (loading) {
@@ -67,7 +72,7 @@ export default function App({navigation}) {
         //   backgroundColor: '#333'
         // }
       }}>
-        <Tab.Screen name="Home" children={(props) => <HomeScreen {...props} caretType={caretType} setCaretType={setCaretType} todos={todos} loading={loading} setNumOfTodosToday={setNumOfTodosToday}/>} options={{
+        <Tab.Screen name="Home" children={(props) => <HomeScreen {...props} caretType={caretType} setCaretType={setCaretType} todos={todos} loading={loading} setNumOfTodosToday={setNumOfTodosToday} userInfo={userInfo}/>} options={{
           title: '홈',
           tabBarIcon: ({ color, size }) => <Icon name="home" color={color} size={size}/>,
           headerTitle: (props) => <DropdownCategory {...props} caretType={caretType} setCaretType={setCaretType} categoryTitle="카테고리"/>,

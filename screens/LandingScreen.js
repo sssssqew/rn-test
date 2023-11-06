@@ -30,7 +30,7 @@ function LandingScreen({navigation}){
         result.then(user => {
             console.log('user : ',user)
             if(user){
-              navigation.navigate('App');
+              navigation.navigate('App', { userInfo: user.user })
             }
           })
     }, [])
