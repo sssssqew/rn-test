@@ -30,7 +30,7 @@ import TodoInsert from '../components/TodoInsert'
 import TodoList from '../components/TodoList'
 import DropdownList from '../components/DropdownList'
 
-function HomeScreen({ navigation, caretType, setCaretType, todos, loading, route, setNumOfTodosToday, userInfo }){ // 필요한 데이터 추가 (todos, loading, route)
+function HomeScreen({ navigation, caretType, setCaretType, todos, loading, route, setNumOfTodosToday, userInfo, setCategoryTitles, categoryTitles, CATEGORY_DROPDOWN_TITLE }){ // 필요한 데이터 추가 (todos, loading, route)
   const categories = ['자기계발', '업무', '오락', '여행', '연애', 'IT', '취미']
   const [todoText, setTodoText] = useState('')
   const [warning, setWarning] = useState(false)
@@ -70,6 +70,7 @@ function HomeScreen({ navigation, caretType, setCaretType, todos, loading, route
         Keyboard.dismiss() // 추가버튼 클릭시 키보드 감추기 
         setTodoText('') // 입력창 초기화
         category.current = '' // 카테고리 초기화 (추가)
+        setCategoryTitles({...categoryTitles, [CATEGORY_DROPDOWN_TITLE]: null})
       }
     }else{
       console.log('3자 이상 입력하세요!')
@@ -85,6 +86,7 @@ function HomeScreen({ navigation, caretType, setCaretType, todos, loading, route
     console.log("카테고리: ", item)
     closeDropdown()
     category.current = item 
+    setCategoryTitles({...categoryTitles, [CATEGORY_DROPDOWN_TITLE]: item})
   }
   const handleOutSideOfMenu = (e) => {
     console.log('홈화면을 터치하셨습니다.')

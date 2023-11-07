@@ -16,6 +16,9 @@ import { // 할일목록 조회를 위한 유틸리티 함수 추가
   getCollection,
 } from './apis/firebase'
 
+const CATEGORY_DROPDOWN_TITLE = '카테고리'
+const YEAR_DROPDOWN_TITLE = '년'
+const MONTH_DROPDOWN_TITLE = '월'
 
 // const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator()
@@ -28,6 +31,7 @@ export default function App({navigation, route}) {
   const [yearCaret, setYearCaret] = useState(false)
   const [monthCaret, setMonthCaret] = useState(false)
   const [numOfTodosToday, setNumOfTodosToday] = useState(0)
+  const [categoryTitles, setCategoryTitles] = useState({ CATEGORY_DROPDOWN_TITLE: null, YEAR_DROPDOWN_TITLE: null, MONTH_DROPDOWN_TITLE: null })
 
   const { userInfo } = route.params
   console.log("로그인한 사용자 정보: ", userInfo)
@@ -72,10 +76,20 @@ export default function App({navigation, route}) {
         //   backgroundColor: '#333'
         // }
       }}>
-        <Tab.Screen name="Home" children={(props) => <HomeScreen {...props} caretType={caretType} setCaretType={setCaretType} todos={todos} loading={loading} setNumOfTodosToday={setNumOfTodosToday} userInfo={userInfo}/>} options={{
+        <Tab.Screen name="Home" children={(props) => <HomeScreen 
+                                                        {...props} 
+                                                        caretType={caretType} 
+                                                        setCaretType={setCaretType} 
+                                                        todos={todos} loading={loading} 
+                                                        setNumOfTodosToday={setNumOfTodosToday} 
+                                                        userInfo={userInfo} 
+                                                        setCategoryTitles={setCategoryTitles} 
+                                                        categoryTitles={categoryTitles}
+                                                        CATEGORY_DROPDOWN_TITLE={CATEGORY_DROPDOWN_TITLE}
+                                                        />} options={{
           title: '홈',
           tabBarIcon: ({ color, size }) => <Icon name="home" color={color} size={size}/>,
-          headerTitle: (props) => <DropdownCategory {...props} caretType={caretType} setCaretType={setCaretType} categoryTitle="카테고리"/>,
+          headerTitle: (props) => <DropdownCategory {...props} caretType={caretType} setCaretType={setCaretType} categoryTitle={categoryTitles[CATEGORY_DROPDOWN_TITLE] ? categoryTitles[CATEGORY_DROPDOWN_TITLE] : CATEGORY_DROPDOWN_TITLE}/>,
           headerStyle: {
             backgroundColor: '#a8c8ffff',
           },
@@ -90,12 +104,17 @@ export default function App({navigation, route}) {
                                                           yearCaret={yearCaret}
                                                           setYearCaret={setYearCaret}
                                                           monthCaret={monthCaret}
-                                                          setMonthCaret={setMonthCaret}/>} options={{
+                                                          setMonthCaret={setMonthCaret}
+                                                          setCategoryTitles={setCategoryTitles}
+                                                          categoryTitles={categoryTitles}
+                                                          YEAR_DROPDOWN_TITLE={YEAR_DROPDOWN_TITLE}
+                                                          MONTH_DROPDOWN_TITLE={MONTH_DROPDOWN_TITLE}
+                                                          />} options={{
           title: '달력',
           tabBarIcon: ({ color, size }) => <Icon name="calendar-month" color={color} size={size}/>,
           headerTitle: (props) => (<View style={{flexDirection: 'row'}}>
-            <DropdownCategory {...props} caretType={yearCaret} setCaretType={setYearCaret} categoryTitle="Year"/>
-            <DropdownCategory {...props} caretType={monthCaret} setCaretType={setMonthCaret} categoryTitle="Month"/>
+            <DropdownCategory {...props} caretType={yearCaret} setCaretType={setYearCaret} categoryTitle={categoryTitles[YEAR_DROPDOWN_TITLE] ? categoryTitles[YEAR_DROPDOWN_TITLE] : YEAR_DROPDOWN_TITLE}/>
+            <DropdownCategory {...props} caretType={monthCaret} setCaretType={setMonthCaret} categoryTitle={categoryTitles[MONTH_DROPDOWN_TITLE] ? categoryTitles[MONTH_DROPDOWN_TITLE] : MONTH_DROPDOWN_TITLE}/>
           </View>),
           headerStyle: {
             backgroundColor: '#a8c8ffff',

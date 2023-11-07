@@ -13,7 +13,7 @@ import { getFullCalendar } from '../utils/time'
 
 import DropdownList from '../components/DropdownList'
 
-function CalendarScreen({navigation, yearCaret, setYearCaret, monthCaret, setMonthCaret }){
+function CalendarScreen({navigation, yearCaret, setYearCaret, monthCaret, setMonthCaret, setCategoryTitles, categoryTitles, YEAR_DROPDOWN_TITLE, MONTH_DROPDOWN_TITLE }){
   const today = getFullCalendar(new Date())
   const week = ["일", "월", "화", "수", "목", "금", "토"] //일주일
   const [selectedYear, setSelectedYear] = useState(today.year) //현재 선택된 연도
@@ -32,6 +32,7 @@ function CalendarScreen({navigation, yearCaret, setYearCaret, monthCaret, setMon
   console.log(days, days.length)
 
   const prevMonth = useCallback(() => { //이전 달 보기 보튼
+    setCategoryTitles({...categoryTitles, [YEAR_DROPDOWN_TITLE]: null, [MONTH_DROPDOWN_TITLE]: null})
     if (selectedMonth === 1) {
       setSelectedMonth(12)
       setSelectedYear(selectedYear - 1)
@@ -40,6 +41,7 @@ function CalendarScreen({navigation, yearCaret, setYearCaret, monthCaret, setMon
     }
   }, [selectedMonth])
   const nextMonth = useCallback(() => { //다음 달 보기 버튼
+    setCategoryTitles({...categoryTitles, [YEAR_DROPDOWN_TITLE]: null, [MONTH_DROPDOWN_TITLE]: null})
     if (selectedMonth === 12) {
       setSelectedMonth(1)
       setSelectedYear(selectedYear + 1)
@@ -53,8 +55,10 @@ function CalendarScreen({navigation, yearCaret, setYearCaret, monthCaret, setMon
     const lastChr = item[item.length-1]
     if(lastChr === "년"){
       setSelectedYear(parseInt(item))
+      setCategoryTitles({...categoryTitles, [YEAR_DROPDOWN_TITLE]: item})
     }else if(lastChr === "월"){
       setSelectedMonth(parseInt(item))
+      setCategoryTitles({...categoryTitles, [MONTH_DROPDOWN_TITLE]: item})
     }
     closeDropdown()
   }
