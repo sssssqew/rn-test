@@ -3,6 +3,7 @@ import { SafeAreaView, View, Text, StyleSheet, StatusBar, ScrollView, Dimensions
 import LandingPage from '../components/LandingPage'
 import landingData from '../data/landingData'
 import LoginButton from '../components/LoginButton';
+import NaverLoginButton from '../components/NaverLoginButton';
 
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
 
@@ -64,6 +65,7 @@ function LandingScreen({navigation}){
                 </View>
 
                 <LoginButton navigation={navigation}/>
+                <NaverLoginButton/>
             </SafeAreaView>
         </>
     )
