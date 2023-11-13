@@ -6,6 +6,7 @@ import LoginButton from '../components/LoginButton';
 import NaverLoginButton from '../components/NaverLoginButton';
 
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 function LandingScreen({navigation}){
     const { width, height } = Dimensions.get('window')
@@ -22,18 +23,43 @@ function LandingScreen({navigation}){
         }
     }
 
-    const getUserInfo = async () => await GoogleSignin.getCurrentUser()
-    useEffect(() => {
-        const result = getUserInfo()
-        // if(user){
-        //     navigation.navigate('App')
-        // }
-        result.then(user => {
-            console.log('user : ',user)
-            if(user){
-              navigation.navigate('App', { userInfo: user.user })
+    const getUserInfo = async () => {
+        // await GoogleSignin.signOut()
+        const result = await GoogleSignin.getCurrentUser()
+        console.log("구글 사용자정보: ", result)
+        if(result){
+            // result.then(user => {
+            //     console.log('user : ',user)
+            //     if(user){
+                  navigation.navigate('App', { userInfo: result.user })
+        //         }
+        //     })
+        }
+    }
+    const getNaverUsreInfo = async (naver_access_token) => {
+        const PROFILE_URL = "https://openapi.naver.com/v1/nid/me"
+        let result = await fetch(PROFILE_URL, {
+            headers: {
+                'Authorization': `Bearer ${naver_access_token}`, 
             }
-          })
+        })
+        result = await result.json()
+        console.log("로그인한 네이버 사용자정보: ", result)
+        const { response } = result
+        navigation.navigate('App', { userInfo: response })
+    }
+    const goHomeIfLogined = async () => {
+        const naver_access_token = await AsyncStorage.getItem('NaverAccessToken') // 로컬스토리지에 저장된 액세스토큰 조회
+
+        // 네이버 로그인여부 체크
+        if(naver_access_token){ // 네이버 로그인
+            getNaverUsreInfo(naver_access_token)
+        }else{ // 구글 로그인
+            getUserInfo()
+        }
+    }
+    useEffect(() => {
+        goHomeIfLogined()
     }, [])
 
     return (
@@ -65,7 +91,7 @@ function LandingScreen({navigation}){
                 </View>
 
                 <LoginButton navigation={navigation}/>
-                <NaverLoginButton/>
+                <NaverLoginButton navigation={navigation}/>
             </SafeAreaView>
         </>
     )
